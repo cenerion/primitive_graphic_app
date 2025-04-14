@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="pwr.matuszewski.MainView">
+  <grid id="27dc6" binding="main_panel" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+    <margin top="0" left="0" bottom="0" right="0"/>
+    <constraints>
+      <xy x="20" y="20" width="588" height="484"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <splitpane id="aba0a">
+        <constraints>
+          <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false">
+            <preferred-size width="200" height="200"/>
+          </grid>
+        </constraints>
+        <properties>
+          <continuousLayout value="false"/>
+          <dividerLocation value="220"/>
+          <dividerSize value="5"/>
+          <resizeWeight value="0.3"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <grid id="73d40" binding="resources_pane" layout-manager="BorderLayout" hgap="0" vgap="0">
+            <constraints>
+              <splitpane position="left"/>
+            </constraints>
+            <properties>
+              <background color="-12467919"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <splitpane id="bde87">
+                <constraints border-constraint="Center"/>
+                <properties>
+                  <dividerSize value="5"/>
+                  <orientation value="0"/>
+                  <resizeWeight value="0.5"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="e74c0" class="pwr.matuszewski.ListaElementow" binding="images_list">
+                    <constraints>
+                      <splitpane position="left"/>
+                    </constraints>
+                    <properties/>
+                  </component>
+                  <component id="ee363" class="pwr.matuszewski.ListaElementow" binding="shapes_list">
+                    <constraints>
+                      <splitpane position="right"/>
+                    </constraints>
+                    <properties/>
+                  </component>
+                </children>
+              </splitpane>
+            </children>
+          </grid>
+          <grid id="1bc76" binding="content_pane" layout-manager="BorderLayout" hgap="0" vgap="0">
+            <constraints>
+              <splitpane position="right"/>
+            </constraints>
+            <properties>
+              <background color="-65024"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <component id="58d39" class="pwr.matuszewski.CanvasPanel" binding="canva_panel">
+                <constraints border-constraint="Center"/>
+                <properties/>
+              </component>
+            </children>
+          </grid>
+        </children>
+      </splitpane>
+      <grid id="8698e" binding="control_panel" layout-manager="BorderLayout" hgap="0" vgap="0">
+        <constraints>
+          <grid row="1" column="0" row-span="1" col-span="2" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <background color="-16773633"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <grid id="c5982" layout-manager="GridBagLayout">
+            <constraints border-constraint="West"/>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="ab248" class="javax.swing.JButton" binding="button_move_">
+                <constraints>
+                  <grid row="1" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="1.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <text value="1px right"/>
+                </properties>
+              </component>
+              <component id="56cba" class="javax.swing.JButton" binding="a1pxLeftButton" default-binding="true">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="1.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <text value="1px left"/>
+                </properties>
+              </component>
+              <component id="703fc" class="javax.swing.JButton" binding="a15degButton" default-binding="true">
+                <constraints>
+                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <text value="-15deg"/>
+                </properties>
+              </component>
+              <component id="3c958" class="javax.swing.JButton" binding="a1pxDownButton" default-binding="true">
+                <constraints>
+                  <grid row="2" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <text value="1px down"/>
+                </properties>
+              </component>
+              <component id="f8138" class="javax.swing.JButton" binding="a15degButton1" default-binding="true">
+                <constraints>
+                  <grid row="2" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <text value="+15deg"/>
+                </properties>
+              </component>
+              <component id="e0b9a" class="javax.swing.JButton" binding="button_rotate_small_inc">
+                <constraints>
+                  <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="1.0" weighty="1.0"/>
+                </constraints>
+                <properties>
+                  <label value="+1deg"/>
+                  <text value="+1deg"/>
+                </properties>
+              </component>
+              <component id="49aae" class="javax.swing.JButton" binding="a1pxUpButton" default-binding="true">
+                <constraints>
+                  <grid row="0" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <text value="1px up"/>
+                </properties>
+              </component>
+              <component id="29c5c" class="javax.swing.JButton" binding="button_rotate_small_dec">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="1.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <text value="-1deg"/>
+                </properties>
+              </component>
+              <component id="f7436" class="javax.swing.JButton" binding="layerDownButton" default-binding="true">
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <text value="layer down"/>
+                </properties>
+              </component>
+              <component id="da422" class="javax.swing.JButton" binding="layerUpButton" default-binding="true">
+                <constraints>
+                  <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <text value="layer up"/>
+                </properties>
+              </component>
+            </children>
+          </grid>
+          <grid id="b6cde" binding="color_control" layout-manager="GridBagLayout">
+            <constraints border-constraint="Center"/>
+            <properties/>
+            <border type="none"/>
+            <children>
+              <component id="c917f" class="javax.swing.JSlider" binding="slider_red">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <majorTickSpacing value="16"/>
+                  <maximum value="255"/>
+                  <minorTickSpacing value="1"/>
+                  <snapToTicks value="true"/>
+                  <value value="128"/>
+                  <valueIsAdjusting value="false"/>
+                </properties>
+              </component>
+              <component id="901e9" class="javax.swing.JSlider" binding="slider_green">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <majorTickSpacing value="16"/>
+                  <maximum value="255"/>
+                  <minorTickSpacing value="1"/>
+                  <value value="128"/>
+                </properties>
+              </component>
+              <component id="8e2ce" class="javax.swing.JSlider" binding="slider_blue">
+                <constraints>
+                  <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <majorTickSpacing value="16"/>
+                  <maximum value="255"/>
+                  <minorTickSpacing value="1"/>
+                  <paintLabels value="false"/>
+                  <paintTicks value="false"/>
+                  <paintTrack value="true"/>
+                  <snapToTicks value="true"/>
+                  <value value="128"/>
+                </properties>
+              </component>
+              <component id="de96f" class="javax.swing.JSpinner" binding="spinner_red">
+                <constraints>
+                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties/>
+              </component>
+              <component id="268e3" class="javax.swing.JSpinner" binding="spinner_green">
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties/>
+              </component>
+              <component id="2d9f" class="javax.swing.JSpinner" binding="spinner_blue">
+                <constraints>
+                  <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties/>
+              </component>
+              <grid id="43013" layout-manager="BorderLayout" hgap="5" vgap="5">
+                <constraints>
+                  <grid row="0" column="2" row-span="3" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <minimumSize width="100" height="0"/>
+                  <preferredSize width="60" height="0"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <grid id="553ca" binding="color_indicator" layout-manager="GridBagLayout">
+                    <constraints border-constraint="Center"/>
+                    <properties>
+                      <enabled value="true"/>
+                      <minimumSize width="0" height="0"/>
+                      <preferredSize width="-1" height="-1"/>
+                    </properties>
+                    <border type="none"/>
+                    <children/>
+                  </grid>
+                </children>
+              </grid>
+            </children>
+          </grid>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>
