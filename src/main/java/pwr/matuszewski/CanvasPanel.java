@@ -5,6 +5,9 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.geom.*;
 import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
+import java.awt.image.BufferedImageOp;
+import java.awt.image.ImageObserver;
 import java.util.ArrayList;
 
 public class CanvasPanel extends JPanel implements MouseListener, MouseMotionListener, ActionListener {
@@ -113,7 +116,7 @@ public class CanvasPanel extends JPanel implements MouseListener, MouseMotionLis
     }
 
     public void addRectangle(int x, int y, int w, int h) {
-        shapes.add(new RectangleItem(x, y, w, h));
+        shapes.add(new ShapeItem(x, y, w, h));
         repaint();
     }
 
@@ -151,14 +154,21 @@ public class CanvasPanel extends JPanel implements MouseListener, MouseMotionLis
     }
 
     // Abstract shape
-    abstract static class ShapeItem {
+    static class ShapeItem {
         enum Handle {
             TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT
         }
 
+        Rectangle2D rect;
         double pos_x = 0, pos_y = 0;
         double scale_x = 1., scale_y = 1.;
         double angle_deg = 0;
+
+        ShapeItem(int x, int y, int w, int h) {
+            rect = new Rectangle2D.Double(-w/2., -w/2., w, h);
+            pos_x = x;
+            pos_y = y;
+        }
 
         AffineTransform transform(){
             AffineTransform at = new AffineTransform();
@@ -177,24 +187,6 @@ public class CanvasPanel extends JPanel implements MouseListener, MouseMotionLis
             scale_x = dx;
             scale_y = dy;
         }
-
-        abstract void draw(Graphics2D g, int handleSize);
-        abstract boolean contains(Point2D p);
-        abstract Handle getHandleUnderMouse(Point2D p, int handleSize);
-        abstract void resize(double dx, double dy, Handle handle);
-    }
-
-
-    // Rectangle
-    static class RectangleItem extends ShapeItem {
-        Rectangle2D rect;
-
-        RectangleItem(int x, int y, int w, int h) {
-            rect = new Rectangle2D.Double(-w/2., -w/2., w, h);
-            pos_x = x;
-            pos_y = y;
-        }
-
         void draw(Graphics2D g, int handleSize) {
             var at = transform();
             var transformed_shape = at.createTransformedShape(rect);
@@ -207,7 +199,6 @@ public class CanvasPanel extends JPanel implements MouseListener, MouseMotionLis
                 g.fill(handle);
             }
         }
-
         Rectangle2D getHandleRect(Handle handle, int size) {
             var bounds = rect.getBounds2D();
 
@@ -324,4 +315,26 @@ public class CanvasPanel extends JPanel implements MouseListener, MouseMotionLis
     }
 
 
+    class ImageItem extends ShapeItem {
+        BufferedImage buf_img;
+
+        ImageItem(int x, int y, BufferedImage image){
+            super(x,y,image.getWidth(), image.getHeight());
+            buf_img = image;
+        }
+
+        @Override
+        void draw(Graphics2D g, int handleSize) {
+            var at = transform();
+            //var op = new AffineTransformOp(at, AffineTransformOp.TYPE_BICUBIC);
+            //var transformed_shape = op.createCompatibleDestImage(buf_img, null);
+            g.drawImage(buf_img, at, null);
+
+            g.setColor(Color.GRAY);
+            for (Handle h : Handle.values()) {
+                Rectangle2D handle = getHandleRect(h, handleSize);
+                g.fill(handle);
+            }
+        }
+    }
 }

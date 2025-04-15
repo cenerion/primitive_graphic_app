@@ -49,7 +49,6 @@ public class ListaElementow extends JPanel {
             public boolean importData(TransferSupport support) {
                 try {
                     if (!canImport(support)) return false;
-
                     List<File> files = (List<File>) support.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
                     for (File file : files) {
                         if (isImageFile(file)) {
