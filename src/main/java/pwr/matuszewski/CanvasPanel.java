@@ -247,24 +247,27 @@ public class CanvasPanel extends JPanel implements MouseListener, MouseMotionLis
 
         void resize(double dx, double dy, Handle handle) {
             var mat = transform();
+            var rotator = AffineTransform.getRotateInstance(-Math.toRadians(angle_deg));
 
-            var image_transform = new AffineTransformOp(mat, AffineTransformOp.TYPE_BICUBIC);
+            //var image_transform = new AffineTransformOp(mat, AffineTransformOp.TYPE_BICUBIC);
 
-
-            var bounds = mat.createTransformedShape(rect).getBounds();
-
-            var pivot = new Point2D.Double(0,0);
-
+            //var scalator = AffineTransform.getScaleInstance(scale_x, scale_y);
+            //var scalator = AffineTransform.getScaleInstance(1, 1);
+            var temp_rect = mat.createTransformedShape(rect);//.getBounds();
+            var bounds = rotator.createTransformedShape(temp_rect).getBounds();
             var w = bounds.getWidth();
             var h = bounds.getHeight();
 
-            var rotator = AffineTransform.getRotateInstance(-Math.toRadians(angle_deg));
+
+
             var p = new Point2D.Double(dx,dy);
             rotator.transform(p,p);
             dx = p.getX();
             dy = p.getY();
 
+
             double scale_x = 0., scale_y = 0.;
+            var pivot = new Point2D.Double(0,0);
 
             switch (handle) {
                 case TOP_LEFT:
@@ -289,41 +292,33 @@ public class CanvasPanel extends JPanel implements MouseListener, MouseMotionLis
                     break;
             }
 
+            rotator.transform(pivot, pivot);
+
 
 
             var res = new AffineTransform();
-            res.translate(pivot.getX(), pivot.getY());
-            //res.rotate(Math.toRadians(angle_deg));
-            res.scale(scale_x, scale_y);
+            //res.translate(0,0);
             //res.rotate(-Math.toRadians(angle_deg));
+            res.translate(pivot.getX(), pivot.getY());
+            res.scale(scale_x, scale_y);
             res.translate(-pivot.getX(), -pivot.getY());
+            //res.rotate(Math.toRadians(angle_deg));
 
             mat.preConcatenate(res);
+
 
             double[] m = new double[6];
             mat.getMatrix(m);
 
-
-/*
-
 // rotation z atan2
             this.angle_deg = Math.toDegrees(Math.atan2(m[1], m[0]));
 
-// długości wektorów: to skale*/
+// długości wektorów: to skale
             this.scale_x = Math.sqrt(m[0] * m[0] + m[1] * m[1]);
             this.scale_y = Math.sqrt(m[2] * m[2] + m[3] * m[3]);
 
             this.pos_x = m[4];
             this.pos_y = m[5];
-
-
-/*
-            this.scale_x = Math.max(mat.getScaleX(), 0.1);
-            this.scale_y = Math.max(mat.getScaleY(), 0.1);
-
-            this.pos_x = mat.getTranslateX();
-            this.pos_y = mat.getTranslateY();
-*/
 
         }
     }
