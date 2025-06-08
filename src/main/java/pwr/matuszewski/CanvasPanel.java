@@ -1,5 +1,7 @@
 package pwr.matuszewski;
 
+import pwr.matuszewski.transferables.ImageOnCanvaTransferHandler;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -11,13 +13,12 @@ import java.awt.image.ImageObserver;
 import java.util.ArrayList;
 
 public class CanvasPanel extends JPanel implements MouseListener, MouseMotionListener, ActionListener {
-    private java.util.List<ShapeItem> shapes = new ArrayList<>();
+    public java.util.List<ShapeItem> shapes = new ArrayList<>();
     private ShapeItem selectedShape = null;
     private ShapeItem.Handle currentHandle = null;
     private Point2D lastMousePos = null;
     private boolean resizing = false;
     private final int resizeHandleSize = 10;
-
 
     JButton rotateButtonPlus;
     JButton rotateButtonMinus;
@@ -44,7 +45,7 @@ public class CanvasPanel extends JPanel implements MouseListener, MouseMotionLis
     @Override
     public void mousePressed(MouseEvent e) {
         Point2D p = e.getPoint();
-        for (ShapeItem shape : shapes) {
+        for (ShapeItem shape : shapes.reversed()) {
             ShapeItem.Handle handle = shape.getHandleUnderMouse(p, resizeHandleSize);
             if (handle != null) {
                 selectedShape = shape;
@@ -67,7 +68,7 @@ public class CanvasPanel extends JPanel implements MouseListener, MouseMotionLis
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        selectedShape = null;
+        //selectedShape = null;
         resizing = false;
         lastMousePos = null;
         currentHandle = null;
@@ -97,6 +98,28 @@ public class CanvasPanel extends JPanel implements MouseListener, MouseMotionLis
     @Override
     public void mouseMoved(MouseEvent e) {}
 
+    public void selectedLayerDown(){
+        var idx = shapes.indexOf(selectedShape);
+        if (idx > 0) {
+            shapes.remove(idx);
+            shapes.add(idx - 1, selectedShape);
+        }
+        repaint();
+    }
+
+    public void selectedLayerUp(){
+        var idx = shapes.indexOf(selectedShape);
+        if (idx < shapes.size() - 1) {
+            shapes.remove(idx);
+            shapes.add(idx + 1, selectedShape);
+        }
+        repaint();
+    }
+
+    public void selectedRotate(float deg){
+
+    }
+
 
     public CanvasPanel() {
 
@@ -113,6 +136,8 @@ public class CanvasPanel extends JPanel implements MouseListener, MouseMotionLis
 
         addMouseListener(this);
         addMouseMotionListener(this);
+
+        setTransferHandler(new ImageOnCanvaTransferHandler(this));
     }
 
     public void addRectangle(int x, int y, int w, int h) {
@@ -137,18 +162,20 @@ public class CanvasPanel extends JPanel implements MouseListener, MouseMotionLis
     public void actionPerformed(ActionEvent e) {
         var source = e.getSource();
         if(source == rotateButtonPlus) {
-            this.shapes.getFirst().angle_deg += 10;
+            //this.shapes.getFirst().angle_deg += 10;
+            this.shapes.getLast().rotate(10);
 
-            if(this.shapes.getFirst().angle_deg > 360.){
-                this.shapes.getFirst().angle_deg -= 360.;
-            }
+//            if(this.shapes.getFirst().angle_deg > 360.){
+//                this.shapes.getFirst().angle_deg -= 360.;
+//            }
         }
         else if(source == rotateButtonMinus) {
-            this.shapes.getFirst().angle_deg -= 10;
+            //this.shapes.getFirst().angle_deg -= 10;
+            this.shapes.getLast().rotate(-10);
 
-            if(this.shapes.getFirst().angle_deg < 0.){
-                this.shapes.getFirst().angle_deg += 360.;
-            }
+//            if(this.shapes.getFirst().angle_deg < 0.){
+//                this.shapes.getFirst().angle_deg += 360.;
+//            }
         }
         repaint();
     }
@@ -163,9 +190,12 @@ public class CanvasPanel extends JPanel implements MouseListener, MouseMotionLis
         double pos_x = 0, pos_y = 0;
         double scale_x = 1., scale_y = 1.;
         double angle_deg = 0;
+        AffineTransform transform;
 
         ShapeItem(int x, int y, int w, int h) {
-            rect = new Rectangle2D.Double(-w/2., -w/2., w, h);
+            rect = new Rectangle2D.Double(-w/2., -h/2., w, h);
+            transform = new AffineTransform();
+            transform.translate(x, y);
             pos_x = x;
             pos_y = y;
         }
@@ -175,12 +205,19 @@ public class CanvasPanel extends JPanel implements MouseListener, MouseMotionLis
             at.translate(pos_x, pos_y);
             at.rotate(Math.toRadians(angle_deg));
             at.scale(scale_x, scale_y);
-            return at;
+            //return at;
+            return transform;
+        }
+
+        void rotate(double deg){
+            transform.rotate(Math.toRadians(deg), pos_x, pos_y);
         }
 
         void move(double dx, double dy){
             pos_x += (int) dx;
             pos_y += (int) dy;
+            var mat = AffineTransform.getTranslateInstance(dx, dy);
+            transform().preConcatenate(mat);
         }
 
         void scale(double dx, double dy){
@@ -199,6 +236,7 @@ public class CanvasPanel extends JPanel implements MouseListener, MouseMotionLis
                 g.fill(handle);
             }
         }
+
         Rectangle2D getHandleRect(Handle handle, int size) {
             var bounds = rect.getBounds2D();
 
@@ -290,9 +328,9 @@ public class CanvasPanel extends JPanel implements MouseListener, MouseMotionLis
             var res = new AffineTransform();
             //res.translate(0,0);
             //res.rotate(-Math.toRadians(angle_deg));
-            res.translate(pivot.getX(), pivot.getY());
+            //res.translate(pivot.getX(), pivot.getY());
             res.scale(scale_x, scale_y);
-            res.translate(-pivot.getX(), -pivot.getY());
+            //res.translate(-pivot.getX(), -pivot.getY());
             //res.rotate(Math.toRadians(angle_deg));
 
             mat.preConcatenate(res);
@@ -300,6 +338,7 @@ public class CanvasPanel extends JPanel implements MouseListener, MouseMotionLis
 
             double[] m = new double[6];
             mat.getMatrix(m);
+
 
 // rotation z atan2
             this.angle_deg = Math.toDegrees(Math.atan2(m[1], m[0]));
@@ -314,13 +353,18 @@ public class CanvasPanel extends JPanel implements MouseListener, MouseMotionLis
         }
     }
 
+    public void addImage(int x, int y, Image image) {
 
-    class ImageItem extends ShapeItem {
-        BufferedImage buf_img;
+    }
+    public static class ImageItem extends ShapeItem {
+        //BufferedImage buf_img;
+        Image buf_img;
 
-        ImageItem(int x, int y, BufferedImage image){
-            super(x,y,image.getWidth(), image.getHeight());
+        public ImageItem(int x, int y, Image image){
+            super(x,y,image.getWidth(null), image.getHeight(null));
             buf_img = image;
+            rect.setFrame(0, 0, image.getWidth(null), image.getHeight(null));
+
         }
 
         @Override
@@ -328,6 +372,8 @@ public class CanvasPanel extends JPanel implements MouseListener, MouseMotionLis
             var at = transform();
             //var op = new AffineTransformOp(at, AffineTransformOp.TYPE_BICUBIC);
             //var transformed_shape = op.createCompatibleDestImage(buf_img, null);
+
+            //g.setTransform(at);
             g.drawImage(buf_img, at, null);
 
             g.setColor(Color.GRAY);
@@ -335,6 +381,30 @@ public class CanvasPanel extends JPanel implements MouseListener, MouseMotionLis
                 Rectangle2D handle = getHandleRect(h, handleSize);
                 g.fill(handle);
             }
+        }
+
+        @Override
+        Rectangle2D getHandleRect(Handle handle, int size) {
+            var bounds = new Rectangle2D.Double();
+            bounds.x = bounds.y = 0;
+            bounds.width = buf_img.getWidth(null);
+            bounds.height = buf_img.getHeight(null);
+
+            var p = new Point2D.Double();
+            switch (handle) {
+                case TOP_LEFT:
+                    p.setLocation(bounds.getMinX(), bounds.getMinY()); break;
+                case TOP_RIGHT:
+                    p.setLocation(bounds.getMaxX(), bounds.getMinY()); break;
+                case BOTTOM_LEFT:
+                    p.setLocation(bounds.getMinX(), bounds.getMaxY()); break;
+                case BOTTOM_RIGHT:
+                    p.setLocation(bounds.getMaxX(), bounds.getMaxY()); break;
+            }
+
+            transform().transform(p,p);
+
+            return new Rectangle2D.Double(p.x - (double) size / 2, p.y - (double) size / 2, size, size);
         }
     }
 }

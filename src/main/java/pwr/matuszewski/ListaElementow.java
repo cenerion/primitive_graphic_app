@@ -1,12 +1,20 @@
 package pwr.matuszewski;
 
+import pwr.matuszewski.transferables.ImageFileTransferHandler;
+import pwr.matuszewski.transferables.ImageTransferHandler;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
 
 public class ListaElementow extends JPanel {
@@ -39,37 +47,11 @@ public class ListaElementow extends JPanel {
         add(scrollPane, BorderLayout.CENTER);
 
         // Ustaw TransferHandler do obsługi plików
-        setTransferHandler(new TransferHandler() {
-            @Override
-            public boolean canImport(TransferSupport support) {
-                return support.isDataFlavorSupported(DataFlavor.javaFileListFlavor);
-            }
-
-            @Override
-            public boolean importData(TransferSupport support) {
-                try {
-                    if (!canImport(support)) return false;
-                    List<File> files = (List<File>) support.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
-                    for (File file : files) {
-                        if (isImageFile(file)) {
-                            addImageElement(file);
-                        }
-                    }
-                    return true;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return false;
-                }
-            }
-        });
+        setTransferHandler(new ImageFileTransferHandler(this));
     }
 
-    private boolean isImageFile(File file) {
-        String name = file.getName().toLowerCase();
-        return name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".png");
-    }
 
-    private void addImageElement(File imageFile) {
+    public void addImageElement(File imageFile) {
         try {
             BufferedImage img = ImageIO.read(imageFile);
             if (img == null) return;
@@ -99,6 +81,16 @@ public class ListaElementow extends JPanel {
                 listaPanel.repaint();
             });
 
+            itemPanel.setTransferHandler(new ImageTransferHandler(img));
+
+            itemPanel.addMouseListener(new MouseAdapter() {
+                public void mousePressed(MouseEvent e) {
+                    JComponent c = (JComponent) e.getSource();
+                    TransferHandler handler = c.getTransferHandler();
+                    handler.exportAsDrag(c, e, TransferHandler.COPY);
+                }
+            });
+
             listaPanel.add(itemPanel);
             listaPanel.revalidate();
             listaPanel.repaint();
@@ -107,7 +99,5 @@ public class ListaElementow extends JPanel {
             e.printStackTrace();
         }
     }
-
-
 
 }

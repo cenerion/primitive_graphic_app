@@ -20,8 +20,8 @@ public class DragDropExample extends JFrame {
         dropPanel.setBorder(BorderFactory.createTitledBorder("Drop Here"));
 
         // Obrazki źródłowe
-        ImageIcon icon1 = new ImageIcon("obrazek1.png");
-        ImageIcon icon2 = new ImageIcon("obrazek2.png");
+        ImageIcon icon1 = new ImageIcon("obrazek1.jpg");
+        ImageIcon icon2 = new ImageIcon("obrazek2.jpg");
 
         JLabel imgLabel1 = new JLabel(icon1);
         JLabel imgLabel2 = new JLabel(icon2);

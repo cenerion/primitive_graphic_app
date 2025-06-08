@@ -4,8 +4,10 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class MainView implements ChangeListener {
+public class MainView implements ChangeListener, ActionListener {
     private JPanel control_panel;
     private JPanel resources_pane;
     private JPanel content_pane;
@@ -65,6 +67,9 @@ public class MainView implements ChangeListener {
         slider_red.addChangeListener(this);
         slider_green.addChangeListener(this);
         slider_blue.addChangeListener(this);
+
+        layerUpButton.addActionListener(this);
+        layerDownButton.addActionListener(this);
     }
 
     @Override
@@ -91,5 +96,9 @@ public class MainView implements ChangeListener {
         }
     }
 
-
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if(e.getSource() == layerDownButton) {canva_panel.selectedLayerDown();}
+        else if(e.getSource() == layerUpButton) {canva_panel.selectedLayerUp();}
+    }
 }
