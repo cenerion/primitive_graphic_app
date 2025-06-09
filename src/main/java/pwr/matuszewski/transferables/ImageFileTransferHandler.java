@@ -1,10 +1,9 @@
 package pwr.matuszewski.transferables;
 
-import pwr.matuszewski.ListaElementow;
+import pwr.matuszewski.ImageList;
 
 import javax.swing.*;
 import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
 import java.io.File;
 import java.util.List;
 
@@ -12,10 +11,10 @@ import static pwr.matuszewski.transferables.Common.isImageFile;
 
 public class ImageFileTransferHandler extends TransferHandler {
 
-    ListaElementow listaElementow;
+    ImageList imageList;
 
-    public ImageFileTransferHandler(ListaElementow listaElementow) {
-        this.listaElementow = listaElementow;
+    public ImageFileTransferHandler(ImageList imageList) {
+        this.imageList = imageList;
     }
 
     @Override
@@ -30,7 +29,7 @@ public class ImageFileTransferHandler extends TransferHandler {
             List<File> files = (List<File>) support.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
             for (File file : files) {
                 if (isImageFile(file)) {
-                    listaElementow.addImageElement(file);
+                    imageList.addImageElement(file);
                 }
             }
             return true;

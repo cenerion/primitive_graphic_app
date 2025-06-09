@@ -40,13 +40,13 @@
                 </properties>
                 <border type="none"/>
                 <children>
-                  <component id="e74c0" class="pwr.matuszewski.ListaElementow" binding="images_list">
+                  <component id="e74c0" class="pwr.matuszewski.ImageList" binding="images_list" custom-create="true">
                     <constraints>
                       <splitpane position="left"/>
                     </constraints>
                     <properties/>
                   </component>
-                  <component id="ee363" class="pwr.matuszewski.ListaElementow" binding="shapes_list">
+                  <component id="4c530" class="pwr.matuszewski.ShapeList" binding="shapes_list">
                     <constraints>
                       <splitpane position="right"/>
                     </constraints>
@@ -65,7 +65,7 @@
             </properties>
             <border type="none"/>
             <children>
-              <component id="58d39" class="pwr.matuszewski.CanvasPanel" binding="canva_panel">
+              <component id="58d39" class="pwr.matuszewski.CanvasPanel" binding="canva_panel" custom-create="true">
                 <constraints border-constraint="Center"/>
                 <properties/>
               </component>
@@ -87,7 +87,7 @@
             <properties/>
             <border type="none"/>
             <children>
-              <component id="ab248" class="javax.swing.JButton" binding="button_move_">
+              <component id="ab248" class="javax.swing.JButton" binding="button_move_right">
                 <constraints>
                   <grid row="1" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                   <gridbag weightx="1.0" weighty="0.0"/>
@@ -96,7 +96,7 @@
                   <text value="1px right"/>
                 </properties>
               </component>
-              <component id="56cba" class="javax.swing.JButton" binding="a1pxLeftButton" default-binding="true">
+              <component id="56cba" class="javax.swing.JButton" binding="button_move_left">
                 <constraints>
                   <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                   <gridbag weightx="1.0" weighty="0.0"/>
@@ -105,7 +105,7 @@
                   <text value="1px left"/>
                 </properties>
               </component>
-              <component id="703fc" class="javax.swing.JButton" binding="a15degButton" default-binding="true">
+              <component id="703fc" class="javax.swing.JButton" binding="button_rotate_large_dec">
                 <constraints>
                   <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                   <gridbag weightx="0.0" weighty="0.0"/>
@@ -114,7 +114,7 @@
                   <text value="-15deg"/>
                 </properties>
               </component>
-              <component id="3c958" class="javax.swing.JButton" binding="a1pxDownButton" default-binding="true">
+              <component id="3c958" class="javax.swing.JButton" binding="button_move_down">
                 <constraints>
                   <grid row="2" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                   <gridbag weightx="0.0" weighty="0.0"/>
@@ -123,7 +123,7 @@
                   <text value="1px down"/>
                 </properties>
               </component>
-              <component id="f8138" class="javax.swing.JButton" binding="a15degButton1" default-binding="true">
+              <component id="f8138" class="javax.swing.JButton" binding="button_rotate_large_inc">
                 <constraints>
                   <grid row="2" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                   <gridbag weightx="0.0" weighty="0.0"/>
@@ -142,7 +142,7 @@
                   <text value="+1deg"/>
                 </properties>
               </component>
-              <component id="49aae" class="javax.swing.JButton" binding="a1pxUpButton" default-binding="true">
+              <component id="49aae" class="javax.swing.JButton" binding="button_move_up">
                 <constraints>
                   <grid row="0" column="1" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
                   <gridbag weightx="0.0" weighty="0.0"/>

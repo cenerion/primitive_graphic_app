@@ -23,24 +23,21 @@ public class CanvasPanel extends JPanel implements MouseListener, MouseMotionLis
     JButton rotateButtonPlus;
     JButton rotateButtonMinus;
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Canvas Example");
-            CanvasPanel canvas = new CanvasPanel();
-
-            canvas.addRectangle(0, 0, 200, 200);
-            //canvas.addCircle(200, 150, 40);
-
-            frame.add(canvas);
-            frame.setSize(600, 400);
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setVisible(true);
-
-        });
-    }
-
     @Override
-    public void mouseClicked(MouseEvent e) {}
+    public void mouseClicked(MouseEvent e) {
+        if(e.getButton() == MouseEvent.BUTTON3) {
+            Point2D p = e.getPoint();
+            for (ShapeItem shape : shapes.reversed()) {
+                if (shape.contains(p)) {
+                    selectedShape = null;
+                    currentHandle = null;
+                    shapes.remove(shape);
+                    repaint();
+                    return;
+                }
+            }
+        }
+    }
 
     @Override
     public void mousePressed(MouseEvent e) {
@@ -117,11 +114,20 @@ public class CanvasPanel extends JPanel implements MouseListener, MouseMotionLis
     }
 
     public void selectedRotate(float deg){
-
+        if(selectedShape != null){
+            selectedShape.rotate(deg);
+            repaint();
+        }
     }
 
+    public void selectedMove(float dx, float dy){
+        if(selectedShape != null){
+            selectedShape.move(dx, dy);
+            repaint();
+        }
+    }
 
-    public CanvasPanel() {
+    public CanvasPanel(ImageList imageList) {
 
         rotateButtonPlus = new JButton("Rotate +10deg");
         rotateButtonPlus.addActionListener(this);
@@ -137,7 +143,7 @@ public class CanvasPanel extends JPanel implements MouseListener, MouseMotionLis
         addMouseListener(this);
         addMouseMotionListener(this);
 
-        setTransferHandler(new ImageOnCanvaTransferHandler(this));
+        setTransferHandler(new ImageOnCanvaTransferHandler(this, imageList));
     }
 
     public void addRectangle(int x, int y, int w, int h) {
@@ -145,10 +151,6 @@ public class CanvasPanel extends JPanel implements MouseListener, MouseMotionLis
         repaint();
     }
 
-//    public void addCircle(int x, int y, int radius) {
-//        shapes.add(new CircleItem(x, y, radius));
-//        repaint();
-//    }
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -210,7 +212,13 @@ public class CanvasPanel extends JPanel implements MouseListener, MouseMotionLis
         }
 
         void rotate(double deg){
-            transform.rotate(Math.toRadians(deg), pos_x, pos_y);
+            Shape transformedShape = transform.createTransformedShape(rect);
+            Rectangle2D bounds = transformedShape.getBounds2D();
+            double centerX = bounds.getCenterX();
+            double centerY = bounds.getCenterY();
+
+            AffineTransform rotation = AffineTransform.getRotateInstance(Math.toRadians(deg), centerX, centerY);
+            transform.preConcatenate(rotation);
         }
 
         void move(double dx, double dy){
@@ -276,79 +284,53 @@ public class CanvasPanel extends JPanel implements MouseListener, MouseMotionLis
 
         void resize(double dx, double dy, Handle handle) {
             var mat = transform();
-            var rotator = AffineTransform.getRotateInstance(-Math.toRadians(angle_deg));
+            var transformedShape  = mat.createTransformedShape(rect);
+            Rectangle2D bounds = transformedShape.getBounds2D();
 
-            //var image_transform = new AffineTransformOp(mat, AffineTransformOp.TYPE_BICUBIC);
-
-            //var scalator = AffineTransform.getScaleInstance(scale_x, scale_y);
-            //var scalator = AffineTransform.getScaleInstance(1, 1);
-            var temp_rect = mat.createTransformedShape(rect);//.getBounds();
-            var bounds = rotator.createTransformedShape(temp_rect).getBounds();
-            var w = bounds.getWidth();
-            var h = bounds.getHeight();
-
-
-
-            var p = new Point2D.Double(dx,dy);
-            rotator.transform(p,p);
-            dx = p.getX();
-            dy = p.getY();
-
-
-            double scale_x = 0., scale_y = 0.;
-            var pivot = new Point2D.Double(0,0);
+            // Skala w zależności od uchwytu
+            double scaleX = 1.0, scaleY = 1.0;
+            double width = bounds.getWidth();
+            double height = bounds.getHeight();
 
             switch (handle) {
                 case TOP_LEFT:
-                    scale_x = (w-dx) / w;
-                    scale_y = (h-dy) / h;
-                    pivot.setLocation(bounds.getMaxX(), bounds.getMaxY());
+                    scaleX = 1.0 - dx / width;
+                    scaleY = 1.0 - dy / height;
                     break;
                 case TOP_RIGHT:
-                    scale_x = (w+dx) / w;
-                    scale_y = (h-dy) / h;
-                    pivot.setLocation(bounds.getMinX(), bounds.getMaxY());
+                    scaleX = 1.0 + dx / width;
+                    scaleY = 1.0 - dy / height;
                     break;
                 case BOTTOM_LEFT:
-                    scale_x = (w-dx) / w;
-                    scale_y = (h+dy) / h;
-                    pivot.setLocation(bounds.getMaxX(), bounds.getMinY());
+                    scaleX = 1.0 - dx / width;
+                    scaleY = 1.0 + dy / height;
                     break;
                 case BOTTOM_RIGHT:
-                    scale_x = (w+dx) / w;
-                    scale_y = (h+dy) / h;
-                    pivot.setLocation(bounds.getMinX(), bounds.getMinY());
+                    scaleX = 1.0 + dx / width;
+                    scaleY = 1.0 + dy / height;
                     break;
             }
 
-            rotator.transform(pivot, pivot);
+            // Minimalna wartość skali
+            scaleX = Math.max(scaleX, 0.1);
+            scaleY = Math.max(scaleY, 0.1);
 
+            // Wyznaczenie punktu przeciwnego (pivot)
+            Point2D pivot = null;
+            switch (handle) {
+                case TOP_LEFT:     pivot = new Point2D.Double(bounds.getMaxX(), bounds.getMaxY()); break;
+                case TOP_RIGHT:    pivot = new Point2D.Double(bounds.getMinX(), bounds.getMaxY()); break;
+                case BOTTOM_LEFT:  pivot = new Point2D.Double(bounds.getMaxX(), bounds.getMinY()); break;
+                case BOTTOM_RIGHT: pivot = new Point2D.Double(bounds.getMinX(), bounds.getMinY()); break;
+            }
 
+            // Stworzenie transformacji: przesuwamy -> skalujemy -> cofamy
+            AffineTransform resizeTransform = new AffineTransform();
+            resizeTransform.translate(pivot.getX(), pivot.getY());
+            resizeTransform.scale(scaleX, scaleY);
+            resizeTransform.translate(-pivot.getX(), -pivot.getY());
 
-            var res = new AffineTransform();
-            //res.translate(0,0);
-            //res.rotate(-Math.toRadians(angle_deg));
-            //res.translate(pivot.getX(), pivot.getY());
-            res.scale(scale_x, scale_y);
-            //res.translate(-pivot.getX(), -pivot.getY());
-            //res.rotate(Math.toRadians(angle_deg));
-
-            mat.preConcatenate(res);
-
-
-            double[] m = new double[6];
-            mat.getMatrix(m);
-
-
-// rotation z atan2
-            this.angle_deg = Math.toDegrees(Math.atan2(m[1], m[0]));
-
-// długości wektorów: to skale
-            this.scale_x = Math.sqrt(m[0] * m[0] + m[1] * m[1]);
-            this.scale_y = Math.sqrt(m[2] * m[2] + m[3] * m[3]);
-
-            this.pos_x = m[4];
-            this.pos_y = m[5];
+            transform.preConcatenate(resizeTransform);
 
         }
     }

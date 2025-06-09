@@ -22,17 +22,17 @@ public class MainView implements ChangeListener, ActionListener {
     private JSpinner spinner_green;
     private JSpinner spinner_blue;
     private CanvasPanel canva_panel;
-    private ListaElementow images_list;
-    private ListaElementow shapes_list;
+    private ImageList images_list;
     private JButton button_rotate_small_dec;
-    private JButton button_move_;
-    private JButton a1pxLeftButton;
+    private JButton button_move_right;
+    private JButton button_move_left;
     private JButton layerDownButton;
-    private JButton a1pxUpButton;
-    private JButton a15degButton;
-    private JButton a1pxDownButton;
-    private JButton a15degButton1;
+    private JButton button_move_up;
+    private JButton button_rotate_large_dec;
+    private JButton button_move_down;
+    private JButton button_rotate_large_inc;
     private JButton layerUpButton;
+    private ShapeList shapes_list;
 
 
     public static void main(String[] args) {
@@ -70,6 +70,15 @@ public class MainView implements ChangeListener, ActionListener {
 
         layerUpButton.addActionListener(this);
         layerDownButton.addActionListener(this);
+        button_move_up.addActionListener(this);
+        button_move_down.addActionListener(this);
+        button_move_left.addActionListener(this);
+        button_move_right.addActionListener(this);
+        button_rotate_large_dec.addActionListener(this);
+        button_rotate_large_inc.addActionListener(this);
+        button_rotate_small_inc.addActionListener(this);
+        button_rotate_small_inc.addActionListener(this);
+
     }
 
     @Override
@@ -100,5 +109,19 @@ public class MainView implements ChangeListener, ActionListener {
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == layerDownButton) {canva_panel.selectedLayerDown();}
         else if(e.getSource() == layerUpButton) {canva_panel.selectedLayerUp();}
+        else if (e.getSource() == button_rotate_small_inc) {canva_panel.selectedRotate(1);}
+        else if (e.getSource() == button_rotate_small_dec) {canva_panel.selectedRotate(-1);}
+        else if (e.getSource() == button_rotate_large_inc ) {canva_panel.selectedRotate(15);}
+        else if (e.getSource() == button_rotate_large_dec ) {canva_panel.selectedRotate(-15);}
+        else if (e.getSource() == button_move_down) {canva_panel.selectedMove(0, 1);}
+        else if (e.getSource() == button_move_up) {canva_panel.selectedMove(0, -1);}
+        else if (e.getSource() == button_move_left) {canva_panel.selectedMove(-1, 0);}
+        else if (e.getSource() == button_move_right) {canva_panel.selectedMove(1, 0);}
+    }
+
+    private void createUIComponents() {
+
+        images_list = new ImageList();
+        canva_panel = new CanvasPanel(images_list);
     }
 }

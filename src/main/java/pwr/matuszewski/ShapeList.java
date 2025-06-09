@@ -7,34 +7,18 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import java.awt.*;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
-import java.util.List;
 
-public class ListaElementow extends JPanel {
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            JFrame frame = new JFrame("Lista obrazów");
-            frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            frame.setSize(400, 600);
-
-            ListaElementow lista = new ListaElementow();
-            frame.add(lista);
-
-            frame.setVisible(true);
-        });
-    }
+public class ShapeList extends JPanel {
 
     private final JPanel listaPanel; // Kontener na elementy
     private final JScrollPane scrollPane;
 
-    public ListaElementow() {
+    public ShapeList() {
         setLayout(new BorderLayout());
 
         listaPanel = new JPanel();
@@ -46,24 +30,20 @@ public class ListaElementow extends JPanel {
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Ustaw TransferHandler do obsługi plików
-        setTransferHandler(new ImageFileTransferHandler(this));
+        var rec = new Rectangle2D.Double(0, 0, 100, 100);
+        var ova = new
+        addShapeElement(rec, "kwadrat");
     }
 
 
-    public void addImageElement(File imageFile) {
+    public void addShapeElement(Shape shape, String name) {
         try {
-            BufferedImage img = ImageIO.read(imageFile);
-            if (img == null) return;
+            BufferedImage img = new BufferedImage(100, 100, BufferedImage.TYPE_INT_ARGB);
+            Graphics2D g2d = (Graphics2D)img.getGraphics();
+            g2d.setColor(Color.BLACK);
+            g2d.fill(shape);
 
-            // Zmniejsz obrazek do miniatury
-            Image scaled = img.getScaledInstance(100, 100, Image.SCALE_SMOOTH);
-            JLabel imageLabel = new JLabel(new ImageIcon(scaled));
-
-            JButton removeButton = new JButton("X");
-            removeButton.setMargin(new Insets(2, 8, 2, 8));
-            removeButton.setForeground(Color.RED);
-            removeButton.setFocusable(false);
+            JLabel imageLabel = new JLabel(new ImageIcon(img));
 
             JPanel itemPanel = new JPanel(new BorderLayout(10, 10));
             itemPanel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 110));
@@ -71,15 +51,8 @@ public class ListaElementow extends JPanel {
             itemPanel.setBorder(BorderFactory.createLineBorder(Color.LIGHT_GRAY));
 
             itemPanel.add(imageLabel, BorderLayout.WEST);
-            itemPanel.add(new JLabel(imageFile.getName()), BorderLayout.CENTER);
-            itemPanel.add(removeButton, BorderLayout.EAST);
+            itemPanel.add(new JLabel(name), BorderLayout.CENTER);
 
-            // Obsługa przycisku usuwania
-            removeButton.addActionListener(e -> {
-                listaPanel.remove(itemPanel);
-                listaPanel.revalidate();
-                listaPanel.repaint();
-            });
 
             itemPanel.setTransferHandler(new ImageTransferHandler(img));
 

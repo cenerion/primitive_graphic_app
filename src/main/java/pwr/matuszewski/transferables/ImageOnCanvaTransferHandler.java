@@ -1,6 +1,7 @@
 package pwr.matuszewski.transferables;
 
 import pwr.matuszewski.CanvasPanel;
+import pwr.matuszewski.ImageList;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -16,8 +17,11 @@ import static pwr.matuszewski.transferables.Common.isImageFile;
 
 public class ImageOnCanvaTransferHandler extends TransferHandler {
     CanvasPanel canvasPanel;
-    public ImageOnCanvaTransferHandler(CanvasPanel canvasPanel) {
+    ImageList imageList;
+
+    public ImageOnCanvaTransferHandler(CanvasPanel canvasPanel, ImageList imageList) {
         this.canvasPanel = canvasPanel;
+        this.imageList = imageList;
     }
 
     @Override
@@ -46,6 +50,7 @@ public class ImageOnCanvaTransferHandler extends TransferHandler {
                         BufferedImage img = ImageIO.read(file);
                         if (img == null) continue;
 
+                        imageList.addImageElement(file);
                         var loc = support.getDropLocation().getDropPoint();
                         canvasPanel.shapes.add(new CanvasPanel.ImageItem(loc.x, loc.y, (img)));
                         canvasPanel.repaint();
